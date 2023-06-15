@@ -56,3 +56,19 @@ def W_no_u_adapt(vals, index, predicted_val):
 
    return w_no_adapt
 
+
+def vals_to_w_no_adapts(vals, predicted_val):
+   w_no_adapts = []
+   for index in range(len(vals)):
+      w_no_adapt = W_no_u_adapt(vals, index, predicted_val)
+      w_no_adapts.append(w_no_adapt)
+   return w_no_adapts
+
+
+
+
+def W_u_adapt_for_other_index(vals, predicted_index, predicted_val, other_index):
+   w_no_adapts = vals_to_w_no_adapts(vals, predicted_val)
+   w_no_adapts_of_area = get_ws_of_area(predicted_index, other_index)
+   max_w_no_adapt_in_area = max(w_no_adapts_of_area)
+   ...

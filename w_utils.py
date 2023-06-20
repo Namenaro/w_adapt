@@ -22,8 +22,10 @@ def vals_to_absolute_errors(vals, val_predicted):
    return abs_errors
 
 
-def get_normed_errors(abs_errors):
+def get_normed_errors_to_p(abs_errors):
    divider = sum(abs_errors)
+   if divider == 0:
+      return [0]* len(abs_errors)
    normed_errors = list([x/divider for x in abs_errors])
    return normed_errors
 
@@ -36,6 +38,13 @@ def get_lesser_errors_normed(normed_errors, index):
          lesser_errors.append(error)
    return lesser_errors
 
+def get_bigges_errors_normed(normed_errors, index):
+   etalon_error = normed_errors[index]
+   bigges_errors = []
+   for error in normed_errors:
+      if error > etalon_error:
+         bigges_errors.append(error)
+   return bigges_errors
 
 def get_coined_entropy_mass_for_p_list(p_list):
    coined_entropy_mass = 0
@@ -44,15 +53,27 @@ def get_coined_entropy_mass_for_p_list(p_list):
       coined_entropy_mass += coined_entr
    return coined_entropy_mass
 
+
+def get_worst_abs_error_imaginary(vals):
+   return max(vals)
+
+def get_normed_errors(abs_errors, worst_abs_error_imaginary):
+   divider = worst_abs_error_imaginary
+   if divider == 0:
+      return [0] * len(abs_errors)
+   normed_errors = list([x / divider for x in abs_errors])
+   return normed_errors
+
 def W_no_u_adapt(vals, index, predicted_val):
    MAX_ENTROPY_COINED = MAX_ENTR_OF_COIN * len(vals)
 
+   worst_abs_error_imaginary = get_worst_abs_error_imaginary(vals)
    abs_errors = vals_to_absolute_errors(vals, predicted_val)
-   normed_errors = get_normed_errors(abs_errors)
+   normed_errors = get_normed_errors(abs_errors, worst_abs_error_imaginary)
 
-   lesser_errors_normed = get_lesser_errors_normed(normed_errors, index)
-   ECLUDED_MASS = get_coined_entropy_mass_for_p_list(lesser_errors_normed)
-   w_no_adapt = (MAX_ENTROPY_COINED - ECLUDED_MASS)/MAX_ENTROPY_COINED
+   bigges_errors_normed = get_bigges_errors_normed(normed_errors, index)
+   BIG_MASS = get_coined_entropy_mass_for_p_list(bigges_errors_normed)
+   w_no_adapt = BIG_MASS/MAX_ENTROPY_COINED
 
    return w_no_adapt
 
